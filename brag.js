@@ -48,7 +48,6 @@ function sortedSuits(hand) {
     });
 }
 
-
 // Hand is in form AcKhJd
 function isFlush(hand) {
     var is = true;
@@ -90,10 +89,26 @@ function getStrength(hand) {
     return strength[handKey(hand)];
 }
 
+/**
+ * 
+ * calculates whether the hand qualifies
+ * 
+ * @param {string} hand 
+ * 
+ * @returns true if the dealer hand qualifies
+ * 
+ */
 function handQualifies(hand) {
     return getStrength(hand) >= getStrength("Qh3s2h");
 }
 
+/**
+ * 
+ * calculates the opponents combos as not qualifying, win, draw, tie
+ * 
+ * @param {string} hand 
+ * @returns array of opponent combos
+ */
 function comboTypes(hand) {
     var notqual = 0;
     var lose = 0;
@@ -133,12 +148,23 @@ function comboTypes(hand) {
     return [notqual,lose,draw,win];
 }
 
+/**
+ * 
+ * 
+ * @param {string} hand 
+ * @returns the percentile of the hand's strength from all hands
+ */
 function handKey(hand) {
     var arr = sortedRanks(hand);
     arr.push(isFlush(hand));
     return arr;
 }
 
+/**
+ * 
+ * @param {string} hand 
+ * @returns the percentile of the hand's strength from all hands
+ */
 function toPercentile(hand) {
     return perc[handKey(hand)]
 }
@@ -155,6 +181,13 @@ function toLog(key,combos){
     i++;
 }
 
+/**
+ * 
+ * initialises the global constants i, combosum, strength and perc which are used by the
+ * other functions.  It iterates through all possible hand strength types defined by their
+ * 3 ranks sorted high to low, and a boolean determining whether they are a flush
+ * 
+ */
 function createLookup() {
   var key
   var combos
@@ -245,6 +278,15 @@ function createLookup() {
     console.log("Prials:",combosum-lc)
 }
 
+/**
+ * 
+ * calculates the expected value of placing an additional bet equal to the ante on the play box
+ * 
+ * @param {string} hand - the hand in string form being evaluated
+ * @param {boolean} drawwins - A parameter stating whether the player wins in a draw (rare)
+ * 
+ * @returns expected value of playing the hand including the value of the ante
+ */
 function expectedValuePlay(hand,drawwins=false) {
     var cs = comboTypes(hand);
     var win = 0;
@@ -259,6 +301,15 @@ function expectedValuePlay(hand,drawwins=false) {
     return (win / totalcombos) + anteBonus(hand);
 }
 
+/**
+ * 
+ * returns the ante bonus of the hand from the object anteBonusD
+ * 
+ * @param {string} hand - the hand in string form being evaluated
+ * 
+ * @returns the ante bonus of the hand from the object anteBonusD
+ * 
+ */
 function anteBonus(hand) {
     if (isPrial(hand)) return anteBonusD['prial'];
     if (isStraight(hand)) {
@@ -271,8 +322,22 @@ function anteBonus(hand) {
     return 0;
 }
 
-
-function gameValue() {
+/**
+ * 
+ * Calculates the value of a game of casino Brag
+ * 
+ * The algorithm is a brute force implementation and so takes several minutes to run
+ * 
+ * @param {boolean} drawwins - A parameter stating whether the player wins in a draw (rare)
+ * 
+ * @returns The expected value of the game of casino Brag
+ * 
+ * @example
+ * It currently returns -0.021422117128357294 which means I probably have a bug because
+ * https://wizardofodds.com/games/3-card-brag/ states 3.35% is the house edge.
+ * 
+ */
+function gameValue(drawwins=false) {
     var ev = 0;
     var cnt = 0;
     for (let i1 = 0; i1 < deck.length - 2; i1++) {
@@ -282,7 +347,7 @@ function gameValue() {
             for (let i3 = i2+1; i3 < deck.length; i3++) {
                 var c3 = deck[i3];
                 var hand = c1.concat(c2,c3);
-                ev += Math.max(expectedValuePlay(hand),-1);
+                ev += Math.max(expectedValuePlay(hand,drawwins),-1);
                 cnt++;
                 if (cnt % 1000 == 0) {
                     console.log("Evaluated",cnt,"hands.")
@@ -306,4 +371,4 @@ function validHand(hand) {
 
 createLookup();
 
-export {validHand, expectedValuePlay, toPercentile, comboTypes};
+export {validHand, expectedValuePlay, toPercentile, comboTypes, gameValue};

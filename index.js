@@ -23,7 +23,6 @@ function outputHTML() {
     results.innerHTML += `<br>Player wins = ${ct[3]}`;
   }
 }
+
 bragHandInput.addEventListener('input', onInput)
 drawWins.addEventListener('input', onInputDraw)
-
-
