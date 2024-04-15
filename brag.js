@@ -238,29 +238,28 @@ function createLookup() {
     console.log("Flushes:",combosum-lc)
     lc = combosum
     // Straights
-    for (let r1 = 1; r1 < 13; r1++) {
-        if (r1 == 1) {
-            key = [12,1,0,false];
-        }
-        else {
-            key = [r1,r1-1,r1-2,false];
-        }
+    for (let r1 = 2; r1 < 13; r1++) {
+        key = [r1,r1-1,r1-2,false];
         combos = STRAIGHT_HAND_COMBOS;
         toLog(key,combos);
     }
+    // A23 is highest straight
+    key = [12,1,0,false];
+    combos = STRAIGHT_HAND_COMBOS;
+    toLog(key,combos);
     console.log("Straights:",combosum-lc)
     lc = combosum
     // Straight Flushes
-    for (let r1 = 1; r1 < 13; r1++) {
-        if (r1 == 1) {
-            key = [12,1,0,true];
-        }
-        else {
-            key = [r1,r1-1,r1-2,true];
-        }
+    for (let r1 = 2; r1 < 13; r1++) {
+        key = [r1,r1-1,r1-2,true];
         combos = STRAIGHT_FLUSH_HAND_COMBOS;
         toLog(key,combos);
     }
+    // A23 is highest straight flush
+    key = [12,1,0,true];
+    combos = STRAIGHT_FLUSH_HAND_COMBOS;
+    toLog(key,combos);
+
     console.log("Straight Flushes:",combosum-lc)
     lc = combosum
     // Prials (non 3)
