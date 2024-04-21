@@ -65,7 +65,8 @@ function isStraight(hand) {
 }
 
 function isStraight_arr(rankarr) {
-    return rankarr[0] == 12 && rankarr[1] == 1 && rankarr[2] == 0 || rankarr[0] - rankarr[2] == 2;
+    return rankarr[0] == 12 && rankarr[1] == 1 && rankarr[2] == 0 || 
+        (rankarr[0] - rankarr[1] == 1 && rankarr[1] - rankarr[2] == 1);
 }
 
 function isPrial(hand) {
